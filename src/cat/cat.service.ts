@@ -13,24 +13,35 @@ export class CatService {
   ) {}
 
   async create(createCatDto: CreateCatDto) {
-    console.log('createCatDto: ', createCatDto);
-    await this.catRepository.create(createCatDto);
+    return await this.catRepository.save(createCatDto);
   }
 
   findAll() {
-    return this.catRepository.find();
+    return this.catRepository.find({
+      order: {
+        id: 'DESC', //按照id降序
+      },
+    });
   }
 
-  findOne(id: number) {
-    // return this.cats.find((item) => item.id === id);
-    return '';
+  async findOne(id: number) {
+    return await this.catRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateCatDto: UpdateCatDto) {
-    return `This action updates a #${id} cat`;
+  async update(id: number, updateCatDto: UpdateCatDto) {
+    return await this.catRepository.save(updateCatDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cat`;
+  async remove(id: number) {
+    const target: Cat | null = await this.catRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (target) {
+      return await this.catRepository.remove(target);
+    }
   }
 }

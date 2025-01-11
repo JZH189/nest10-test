@@ -27,17 +27,18 @@ export class CatController {
 
   @Get(':id')
   findOne(@Param('id') id: string): any {
-    console.log('typeof id: ', typeof id);
     return this.catService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
-    return this.catService.update(+id, updateCatDto);
+  update(@Param('id') id: number, @Body() updateCatDto: UpdateCatDto) {
+    //由于在main.ts中使用了transform: true,因此id会被转为number类型
+    console.log('typeof id: ', typeof id);
+    return this.catService.update(id, updateCatDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.catService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.catService.remove(id);
   }
 }
