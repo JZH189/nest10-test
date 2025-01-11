@@ -10,5 +10,5 @@ export class CreateCatDto {
   readonly breed: string;
 
   @IsString({ each: true })
-  readonly friends: string[];
+  readonly features: string[];
 }

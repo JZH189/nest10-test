@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Feature } from './feature.entity';
 
 @Entity()
 export class Cat {
@@ -14,6 +21,7 @@ export class Cat {
   @Column()
   breed: string;
 
-  @Column('json', { nullable: true })
-  friends: string[];
+  @JoinTable() //指定关系的owner,即Cat
+  @ManyToMany((type) => Feature, (feature) => feature.cats)
+  features: string[];
 }

@@ -15,7 +15,7 @@ import { CatModule } from './cat/cat.module';
       password: 'mysql123456,',
       database: 'test',
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true, //!生产环境必须设置为false
     }),
   ],
   controllers: [AppController],
