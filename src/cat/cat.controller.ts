@@ -6,12 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Req,
-  Query,
-  Ip,
-  Header,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { CatService } from './cat.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
@@ -20,29 +15,19 @@ import { UpdateCatDto } from './dto/update-cat.dto';
 export class CatController {
   constructor(private readonly catService: CatService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() createCatDto: CreateCatDto) {
-    console.log('createCatDto: ', createCatDto);
     return this.catService.create(createCatDto);
   }
 
   @Get()
-  @Header('Cache-Control', 'none')
-  findAll(
-    @Req() request: Request,
-    @Body() body: Body,
-    @Query() query: Request['query'],
-    @Ip() ip: Request['ip'],
-  ) {
-    console.log('ip: ', ip);
-    console.log('query: ', query);
-    // console.log('body: ', body);
-    // console.log('request: ', request);
+  findAll() {
     return this.catService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): any {
+    console.log('typeof id: ', typeof id);
     return this.catService.findOne(+id);
   }
 
