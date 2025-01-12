@@ -31,8 +31,8 @@ export class CatService {
   findAll(paginationQuery: PaginationQueryDto) {
     const { limit = 2, offset } = paginationQuery;
     return this.catRepository.find({
-      skip: offset,
-      take: limit,
+      // skip: offset,
+      // take: limit,
       relations: ['features'],
       order: {
         id: 'DESC', //按照id降序
