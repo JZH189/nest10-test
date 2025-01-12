@@ -6,6 +6,7 @@ import { Feature } from './entities/feature.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CatService {
@@ -14,7 +15,11 @@ export class CatService {
     private readonly catRepository: Repository<Cat>,
     @InjectRepository(Feature)
     private readonly featureRepository: Repository<Feature>,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    const databasePort = this.configService.get<number>('database.port');
+    console.log(databasePort);
+  }
 
   async create(createCatDto: CreateCatDto) {
     const features =
