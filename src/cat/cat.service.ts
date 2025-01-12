@@ -5,6 +5,7 @@ import { Cat } from './entities/cat.entity';
 import { Feature } from './entities/feature.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
 
 @Injectable()
 export class CatService {
@@ -27,8 +28,11 @@ export class CatService {
     });
   }
 
-  findAll() {
+  findAll(paginationQuery: PaginationQueryDto) {
+    const { limit = 2, offset } = paginationQuery;
     return this.catRepository.find({
+      skip: offset,
+      take: limit,
       relations: ['features'],
       order: {
         id: 'DESC', //按照id降序

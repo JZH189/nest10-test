@@ -8,6 +8,9 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, //启用参数白名单
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
   await app.listen(process.env.PORT ?? 3000);

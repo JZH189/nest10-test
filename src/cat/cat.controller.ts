@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CatService } from './cat.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('cat')
 export class CatController {
@@ -21,8 +23,8 @@ export class CatController {
   }
 
   @Get()
-  findAll() {
-    return this.catService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.catService.findAll(paginationQuery);
   }
 
   @Get(':id')
