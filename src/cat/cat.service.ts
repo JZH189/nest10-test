@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { Cat } from './entities/cat.entity';
@@ -6,7 +6,8 @@ import { Feature } from './entities/feature.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import catConfig from 'src/config/cat.config';
 
 @Injectable()
 export class CatService {
@@ -16,9 +17,15 @@ export class CatService {
     @InjectRepository(Feature)
     private readonly featureRepository: Repository<Feature>,
     private readonly configService: ConfigService,
+    @Inject(catConfig.KEY)
+    private readonly catConfiguration: ConfigType<typeof catConfig>,
   ) {
-    const databasePort = this.configService.get<number>('database.port');
-    console.log(databasePort);
+    //带类型提示的配置文件
+    console.log('catConfiguration: ', catConfiguration.foo);
+    // const databasePort = this.configService.get<number>('database.port');
+    // console.log('databasePort: ', databasePort);
+    // const catConfig = this.configService.get<number>('cat');
+    // console.log('catConfig: ', catConfig);
   }
 
   async create(createCatDto: CreateCatDto) {
