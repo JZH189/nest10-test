@@ -22,6 +22,8 @@ export class Cat {
   breed: string;
 
   @JoinTable() //指定关系的owner,即Cat
-  @ManyToMany((type) => Feature, (feature) => feature.cats)
-  features: string[];
+  @ManyToMany((type) => Feature, (feature) => feature.cats, {
+    cascade: true,
+  })
+  features: Feature[];
 }
