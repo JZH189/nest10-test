@@ -8,20 +8,22 @@ import appConfig from './config/app.config';
 
 @Module({
   imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'mysql',
+        host: process.env.DATABASE_HOST,
+        port: Number(process.env.DATABASE_PORT),
+        username: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+        autoLoadEntities: true,
+        synchronize: true, //!生产环境必须设置为false
+      }),
+    }),
     ConfigModule.forRoot({
       load: [appConfig],
     }), //从默认位置加载并解析.env文件
     CatModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      autoLoadEntities: true,
-      synchronize: true, //!生产环境必须设置为false
-    }),
   ],
   controllers: [AppController],
   providers: [AppService],
