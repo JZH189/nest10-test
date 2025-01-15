@@ -12,6 +12,7 @@ import { CatService } from './cat.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { Public } from 'src/common/decorators/public.decorators';
 
 @Controller('cat')
 export class CatController {
@@ -22,6 +23,7 @@ export class CatController {
     return this.catService.create(createCatDto);
   }
 
+  @Public() //自定义装饰器
   @Get()
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.catService.findAll(paginationQuery);
