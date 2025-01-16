@@ -14,6 +14,7 @@ import { UpdateCatDto } from './dto/update-cat.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { Public } from 'src/common/decorators/public.decorators';
 import { ParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
+import { Protocol } from 'src/common/decorators/protocal.decorator';
 @Controller('cat')
 export class CatController {
   constructor(private readonly catService: CatService) {}
@@ -25,7 +26,11 @@ export class CatController {
 
   @Public() //自定义装饰器
   @Get()
-  async findAll(@Query() paginationQuery: PaginationQueryDto) {
+  async findAll(
+    @Protocol() protocol: string,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    console.log('protocol: ', protocol);
     //测试延迟拦截器
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.catService.findAll(paginationQuery);
