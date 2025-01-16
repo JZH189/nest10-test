@@ -25,7 +25,9 @@ export class CatController {
 
   @Public() //自定义装饰器
   @Get()
-  findAll(@Query() paginationQuery: PaginationQueryDto) {
+  async findAll(@Query() paginationQuery: PaginationQueryDto) {
+    //测试延迟拦截器
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.catService.findAll(paginationQuery);
   }
 
