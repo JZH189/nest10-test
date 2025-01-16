@@ -13,7 +13,7 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { Public } from 'src/common/decorators/public.decorators';
-
+import { ParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
 @Controller('cat')
 export class CatController {
   constructor(private readonly catService: CatService) {}
@@ -32,7 +32,7 @@ export class CatController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): any {
+  findOne(@Param('id', ParseIntPipe) id: string): any {
     return this.catService.findOne(+id);
   }
 
