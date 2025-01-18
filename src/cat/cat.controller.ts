@@ -36,7 +36,7 @@ export class CatController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The found record',
+    description: 'The found records',
     type: [Cat],
   })
   @Public() //自定义装饰器
