@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { CatModule } from './cat/cat.module';
 import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
+import { UserModule } from './user/user.module';
+import { IamModule } from './iam/iam.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -24,7 +26,10 @@ import appConfig from './config/app.config';
     ConfigModule.forRoot({
       load: [appConfig],
     }), //从默认位置加载并解析.env文件
-    CatModule, CommonModule,
+    CatModule,
+    CommonModule,
+    UserModule,
+    IamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
