@@ -3,26 +3,28 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { HashingService } from '../hashing/hashing.service';
-import { Repository } from 'typeorm';
+import { BcryptService } from '../hashing/bcrypt.service';
 import { SignUpDto } from './dto/sign-up.dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
+import { AbstractService } from 'src/common/abstract.service';
 
 @Injectable()
-export class AuthenticationService {
-  constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
-    private readonly hashingService: HashingService,
-  ) {}
+export class AuthenticationService extends AbstractService {
+  constructor(private readonly bcryptService: BcryptService) {
+    super();
+  }
 
   async signUp({ email, password }: SignUpDto) {
     try {
-      const user = new User();
-      user.email = email;
-      user.password = await this.hashingService.hash(password);
-      await this.usersRepository.save(user);
+      // const user = new User();
+      // user.email = email;
+      // user.password = await this.hashingService.hash(password);
+      // await this.usersRepository.save(user);
+      await this.entityManager.insert(User, {
+        password: this.bcryptService.hash(password),
+        email,
+      });
     } catch (error) {
       const pgUniqueViolationErrorCode = '23505';
       if (error.code === pgUniqueViolationErrorCode) {
@@ -33,11 +35,15 @@ export class AuthenticationService {
   }
 
   async signIn({ email, password }: SignInDto) {
-    const user = await this.usersRepository.findOneBy({ email });
+    const user = await this.entityManager.findOne(User, {
+      where: {
+        email,
+      },
+    });
     if (!user) {
       throw new UnauthorizedException('User does not exists');
     }
-    const isEqual = await this.hashingService.compare(password, user.password);
+    const isEqual = await this.bcryptService.compare(password, user.password);
     if (!isEqual) {
       throw new UnauthorizedException('Password does not match');
     }
