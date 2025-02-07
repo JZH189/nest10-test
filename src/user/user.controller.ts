@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { ActiveUserData } from 'src/iam/interfaces/active-user-data.interface';
 
 @Controller('user')
 export class UserController {
@@ -22,7 +23,7 @@ export class UserController {
   }
 
   @Get()
-  findAll(@ActiveUser() user) {
+  findAll(@ActiveUser() user: ActiveUserData) {
     console.log('user: ', user);
     return this.userService.findAll();
   }
