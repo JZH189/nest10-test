@@ -15,7 +15,10 @@ import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { randomUUID } from 'crypto';
-import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
+import {
+  InvalidatedRefreshTokenError,
+  RefreshTokenIdsStorage,
+} from './refresh-token-ids.storage';
 
 @Injectable()
 export class AuthenticationService extends AbstractService {
@@ -112,7 +115,10 @@ export class AuthenticationService extends AbstractService {
         throw new Error('Refresh token is invalid');
       }
       return await this.generateTokens(user);
-    } catch {
+    } catch (err) {
+      if (err instanceof InvalidatedRefreshTokenError) {
+        throw new UnauthorizedException('Access denied');
+      }
       throw new UnauthorizedException();
     }
   }
