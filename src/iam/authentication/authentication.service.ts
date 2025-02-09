@@ -14,7 +14,8 @@ import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { ref } from '@hapi/joi';
+import { randomUUID } from 'crypto';
+import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 
 @Injectable()
 export class AuthenticationService extends AbstractService {
@@ -23,6 +24,7 @@ export class AuthenticationService extends AbstractService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {
     super();
   }
@@ -67,6 +69,7 @@ export class AuthenticationService extends AbstractService {
   }
 
   private async generateTokens(user: User) {
+    const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
@@ -75,11 +78,11 @@ export class AuthenticationService extends AbstractService {
           email: user.email,
         },
       ),
-      this.signToken<Partial<ActiveUserData>>(
-        user.id,
-        this.jwtConfiguration.refreshTokenTtl,
-      ),
+      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {
+        refreshTokenId,
+      }),
     ]);
+    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
     return {
       accessToken,
       refreshToken,
@@ -88,8 +91,8 @@ export class AuthenticationService extends AbstractService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync<
-        Pick<ActiveUserData, 'sub'>
+      const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'> & { refreshTokenId: string }
       >(refreshTokenDto.refreshToken, {
         secret: this.jwtConfiguration.secret,
         audience: this.jwtConfiguration.audience,
@@ -98,6 +101,16 @@ export class AuthenticationService extends AbstractService {
       const user = await this.entityManager.findOneByOrFail(User, {
         id: sub,
       });
+      //验证刷新token是否有效
+      const isValid = await this.refreshTokenIdsStorage.validate(
+        user.id,
+        refreshTokenId,
+      );
+      if (isValid) {
+        await this.refreshTokenIdsStorage.invalidate(user.id);
+      } else {
+        throw new Error('Refresh token is invalid');
+      }
       return await this.generateTokens(user);
     } catch {
       throw new UnauthorizedException();
