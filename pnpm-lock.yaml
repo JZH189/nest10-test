@@ -53,6 +53,9 @@ importers:
       nest-knife4j:
         specifier: ^1.0.1
         version: 1.0.1(@types/express@5.0.0)(express@4.21.2)
+      piscina:
+        specifier: 5.0.0-alpha.0
+        version: 5.0.0-alpha.0
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -2850,6 +2853,10 @@ packages:
 
   piscina@4.8.0:
     resolution: {integrity: sha512-EZJb+ZxDrQf3dihsUL7p42pjNyrNIFJCrRHPMgxu/svsj+P3xS3fuEWp7k2+rfsavfl1N0G29b1HGs7J0m8rZA==}
+
+  piscina@5.0.0-alpha.0:
+    resolution: {integrity: sha512-h82sk3I9Pm2lHx5FCC4qayvv1EkNH5VI7sRJVsCkAlsnhWWYpWz/0Tr1UeoPBhtuCFs6ZdNeYCYF9AOTw4Itfg==}
+    engines: {node: '>=18.x'}
 
   pkg-dir@4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
@@ -6775,6 +6782,10 @@ snapshots:
   pirates@4.0.6: {}
 
   piscina@4.8.0:
+    optionalDependencies:
+      '@napi-rs/nice': 1.0.1
+
+  piscina@5.0.0-alpha.0:
     optionalDependencies:
       '@napi-rs/nice': 1.0.1
 

@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
 import { IamModule } from './iam/iam.module';
+import { FibonacciModule } from './fibonacci/fibonacci.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -30,6 +31,7 @@ import appConfig from './config/app.config';
     CommonModule,
     UserModule,
     IamModule,
+    FibonacciModule,
   ],
   controllers: [AppController],
   providers: [AppService],
