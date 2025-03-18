@@ -30,7 +30,7 @@ import appConfig from './config/app.config';
     CatModule,
     CommonModule,
     UserModule,
-    IamModule,
+    // IamModule,
     FibonacciModule,
   ],
   controllers: [AppController],
